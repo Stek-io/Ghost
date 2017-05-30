@@ -13,13 +13,13 @@ var Promise = require('bluebird'),
 exports.validate = function validate(options) {
     var authType = options.authType;
 
-    if (authType === 'ghost') {
-        return Promise.reject(new errors.InternalServerError({
-            code: 'AUTH_TYPE',
-            message: 'Ghost doesn\'t support remote authentication at the moment.',
-            help: 'Set `auth.type` to "password".'
-        }));
-    }
+    // if (authType === 'ghost') {
+    //     return Promise.reject(new errors.InternalServerError({
+    //         code: 'AUTH_TYPE',
+    //         message: 'Ghost doesn\'t support remote authentication at the moment.',
+    //         help: 'Set `auth.type` to "password".'
+    //     }));
+    // }
 
     return models.User.isSetup()
         .then(function (isSetup) {
