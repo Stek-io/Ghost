@@ -1,5 +1,5 @@
 {
-    "url": "http://my-ghost-blog.com",
+    "url": "http://ghost.dev",
     "database": {
         "client": "mysql",
         "connection": {
