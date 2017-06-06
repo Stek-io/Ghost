@@ -11,7 +11,7 @@
     },
     "auth": {
         "type": "ghost",
-        "url": "https://auth.ghost.org"
+        "url": "http://ghost-sso.stek.dev"
     },
     "paths": {
         "contentPath": "content/"
