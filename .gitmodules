@@ -1,6 +1,8 @@
 [submodule "content/themes/casper"]
 	path = content/themes/casper
+	branch = ghost-1.0
 	url = git@github.com:Stek-io/Casper.git
 [submodule "core/client"]
 	path = core/client
+        branch = 1.0.0-alpha.21
 	url = git@github.com:Stek-io/Ghost-Admin.git
