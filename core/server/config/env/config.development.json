@@ -1,5 +1,5 @@
 {
-    "url": "http://localhost:2368",
+    "url": "http://ghost.dev",
     "database": {
         "client": "mysql",
         "connection": {
@@ -10,7 +10,8 @@
         }
     },
     "auth": {
-        "type": "password"
+        "type": "ghost",
+        "url": "http://ghost-sso.stek.dev"
     },
     "paths": {
         "contentPath": "content/"
