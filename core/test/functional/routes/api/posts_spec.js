@@ -5,6 +5,7 @@ var should = require('should'),
     ObjectId = require('bson-objectid'),
     config = require('../../../../../core/server/config'),
     ghost = testUtils.startGhost,
+    markdownToMobiledoc = testUtils.DataGenerator.markdownToMobiledoc,
     request;
 
 describe('Post API', function () {
@@ -49,11 +50,143 @@ describe('Post API', function () {
                     var jsonResponse = res.body;
                     should.exist(jsonResponse.posts);
                     testUtils.API.checkResponse(jsonResponse, 'posts');
-                    jsonResponse.posts.should.have.length(5);
+                    jsonResponse.posts.should.have.length(11);
                     testUtils.API.checkResponse(jsonResponse.posts[0], 'post');
                     testUtils.API.checkResponse(jsonResponse.meta.pagination, 'pagination');
                     _.isBoolean(jsonResponse.posts[0].featured).should.eql(true);
                     _.isBoolean(jsonResponse.posts[0].page).should.eql(true);
+
+                    done();
+                });
+        });
+
+        it('can retrieve a single post format', function (done) {
+            request.get(testUtils.API.getApiQuery('posts/?formats=mobiledoc'))
+                .set('Authorization', 'Bearer ' + accesstoken)
+                .expect('Content-Type', /json/)
+                .expect('Cache-Control', testUtils.cacheRules.private)
+                .expect(200)
+                .end(function (err, res) {
+                    if (err) {
+                        return done(err);
+                    }
+
+                    should.not.exist(res.headers['x-cache-invalidate']);
+                    var jsonResponse = res.body;
+                    should.exist(jsonResponse.posts);
+                    testUtils.API.checkResponse(jsonResponse, 'posts');
+                    jsonResponse.posts.should.have.length(11);
+                    testUtils.API.checkResponse(jsonResponse.posts[0], 'post', ['mobiledoc'], ['html']);
+                    testUtils.API.checkResponse(jsonResponse.meta.pagination, 'pagination');
+                    _.isBoolean(jsonResponse.posts[0].featured).should.eql(true);
+                    _.isBoolean(jsonResponse.posts[0].page).should.eql(true);
+
+                    done();
+                });
+        });
+
+        it('can retrieve multiple post formats', function (done) {
+            request.get(testUtils.API.getApiQuery('posts/?formats=plaintext,mobiledoc,amp'))
+                .set('Authorization', 'Bearer ' + accesstoken)
+                .expect('Content-Type', /json/)
+                .expect('Cache-Control', testUtils.cacheRules.private)
+                .expect(200)
+                .end(function (err, res) {
+                    if (err) {
+                        return done(err);
+                    }
+
+                    should.not.exist(res.headers['x-cache-invalidate']);
+                    var jsonResponse = res.body;
+                    should.exist(jsonResponse.posts);
+                    testUtils.API.checkResponse(jsonResponse, 'posts');
+                    jsonResponse.posts.should.have.length(11);
+                    testUtils.API.checkResponse(jsonResponse.posts[0], 'post', ['mobiledoc', 'plaintext', 'amp'], ['html']);
+                    testUtils.API.checkResponse(jsonResponse.meta.pagination, 'pagination');
+                    _.isBoolean(jsonResponse.posts[0].featured).should.eql(true);
+                    _.isBoolean(jsonResponse.posts[0].page).should.eql(true);
+
+                    done();
+                });
+        });
+
+        it('can handle unknown post formats', function (done) {
+            request.get(testUtils.API.getApiQuery('posts/?formats=plaintext,mobiledo'))
+                .set('Authorization', 'Bearer ' + accesstoken)
+                .expect('Content-Type', /json/)
+                .expect('Cache-Control', testUtils.cacheRules.private)
+                .expect(200)
+                .end(function (err, res) {
+                    if (err) {
+                        return done(err);
+                    }
+
+                    should.not.exist(res.headers['x-cache-invalidate']);
+                    var jsonResponse = res.body;
+                    should.exist(jsonResponse.posts);
+                    testUtils.API.checkResponse(jsonResponse, 'posts');
+                    jsonResponse.posts.should.have.length(11);
+                    testUtils.API.checkResponse(jsonResponse.posts[0], 'post', ['plaintext'], ['html']);
+                    testUtils.API.checkResponse(jsonResponse.meta.pagination, 'pagination');
+                    _.isBoolean(jsonResponse.posts[0].featured).should.eql(true);
+                    _.isBoolean(jsonResponse.posts[0].page).should.eql(true);
+
+                    done();
+                });
+        });
+
+        it('can handle empty formats (default html is expected)', function (done) {
+            request.get(testUtils.API.getApiQuery('posts/?formats='))
+                .set('Authorization', 'Bearer ' + accesstoken)
+                .expect('Content-Type', /json/)
+                .expect('Cache-Control', testUtils.cacheRules.private)
+                .expect(200)
+                .end(function (err, res) {
+                    if (err) {
+                        return done(err);
+                    }
+
+                    should.not.exist(res.headers['x-cache-invalidate']);
+                    var jsonResponse = res.body;
+                    should.exist(jsonResponse.posts);
+                    testUtils.API.checkResponse(jsonResponse, 'posts');
+                    jsonResponse.posts.should.have.length(11);
+                    testUtils.API.checkResponse(jsonResponse.posts[0], 'post');
+                    testUtils.API.checkResponse(jsonResponse.meta.pagination, 'pagination');
+                    _.isBoolean(jsonResponse.posts[0].featured).should.eql(true);
+                    _.isBoolean(jsonResponse.posts[0].page).should.eql(true);
+
+                    done();
+                });
+        });
+
+        it('fields and formats', function (done) {
+            request.get(testUtils.API.getApiQuery('posts/?formats=mobiledoc,html&fields=id,title'))
+                .set('Authorization', 'Bearer ' + accesstoken)
+                .expect('Content-Type', /json/)
+                .expect('Cache-Control', testUtils.cacheRules.private)
+                .expect(200)
+                .end(function (err, res) {
+                    if (err) {
+                        return done(err);
+                    }
+
+                    should.not.exist(res.headers['x-cache-invalidate']);
+                    var jsonResponse = res.body;
+                    should.exist(jsonResponse.posts);
+                    testUtils.API.checkResponse(jsonResponse, 'posts');
+                    jsonResponse.posts.should.have.length(11);
+
+                    testUtils.API.checkResponse(
+                        jsonResponse.posts[0],
+                        'post',
+                        null,
+                        null,
+                        ['mobiledoc', 'id', 'title', 'html']
+                    );
+
+                    testUtils.API.checkResponse(jsonResponse.meta.pagination, 'pagination');
+
                     done();
                 });
         });
@@ -73,7 +206,7 @@ describe('Post API', function () {
                     var jsonResponse = res.body;
                     should.exist(jsonResponse.posts);
                     testUtils.API.checkResponse(jsonResponse, 'posts');
-                    jsonResponse.posts.should.have.length(6);
+                    jsonResponse.posts.should.have.length(12);
                     testUtils.API.checkResponse(jsonResponse.posts[0], 'post');
                     testUtils.API.checkResponse(jsonResponse.meta.pagination, 'pagination');
                     done();
@@ -97,7 +230,7 @@ describe('Post API', function () {
                     var jsonResponse = res.body;
                     should.exist(jsonResponse.posts);
                     testUtils.API.checkResponse(jsonResponse, 'posts');
-                    jsonResponse.posts.should.have.length(9);
+                    jsonResponse.posts.should.have.length(15);
                     testUtils.API.checkResponse(jsonResponse.posts[0], 'post');
                     testUtils.API.checkResponse(jsonResponse.meta.pagination, 'pagination');
                     done();
@@ -225,7 +358,7 @@ describe('Post API', function () {
         });
 
         it('can retrieve a post by slug', function (done) {
-            request.get(testUtils.API.getApiQuery('posts/slug/welcome-to-ghost/'))
+            request.get(testUtils.API.getApiQuery('posts/slug/welcome/'))
                 .set('Authorization', 'Bearer ' + accesstoken)
                 .expect('Content-Type', /json/)
                 .expect('Cache-Control', testUtils.cacheRules.private)
@@ -240,7 +373,7 @@ describe('Post API', function () {
                     should.exist(jsonResponse);
                     should.exist(jsonResponse.posts);
                     testUtils.API.checkResponse(jsonResponse.posts[0], 'post');
-                    jsonResponse.posts[0].slug.should.equal('welcome-to-ghost');
+                    jsonResponse.posts[0].slug.should.equal('welcome');
                     jsonResponse.posts[0].page.should.not.be.ok();
                     _.isBoolean(jsonResponse.posts[0].featured).should.eql(true);
                     _.isBoolean(jsonResponse.posts[0].page).should.eql(true);
@@ -393,7 +526,7 @@ describe('Post API', function () {
     // ## Add
     describe('Add', function () {
         it('create and ensure dates are correct', function (done) {
-            var newPost = {posts: [{status: 'published', published_at: '2016-05-30T07:00:00.000Z'}]};
+            var newPost = {posts: [{status: 'published', published_at: '2016-05-30T07:00:00.000Z', mobiledoc: markdownToMobiledoc()}]};
 
             request.post(testUtils.API.getApiQuery('posts'))
                 .set('Authorization', 'Bearer ' + accesstoken)
@@ -444,7 +577,7 @@ describe('Post API', function () {
                 newTagName = 'My Tag',
                 publishedState = 'published',
                 newTag = {id: null, name: newTagName},
-                newPost = {posts: [{status: 'draft', title: newTitle, markdown: 'my post', tags: [newTag]}]};
+                newPost = {posts: [{status: 'draft', title: newTitle, mobiledoc: markdownToMobiledoc('my post'), tags: [newTag]}]};
 
             request.post(testUtils.API.getApiQuery('posts/?include=tags'))
                 .set('Authorization', 'Bearer ' + accesstoken)
@@ -579,7 +712,7 @@ describe('Post API', function () {
             var newTitle = 'My Post',
                 newTagName = 'My Tag',
                 newTag = {id: null, name: newTagName},
-                newPost = {posts: [{status: 'draft', title: newTitle, markdown: 'my post', tags: [newTag]}]};
+                newPost = {posts: [{status: 'draft', title: newTitle, mobiledoc: markdownToMobiledoc('my post'), tags: [newTag]}]};
 
             request.post(testUtils.API.getApiQuery('posts/?include=tags'))
                 .set('Authorization', 'Bearer ' + accesstoken)
@@ -624,7 +757,7 @@ describe('Post API', function () {
                 newTagName = 'My Tag',
                 draftState = 'draft',
                 newTag = {id: null, name: newTagName},
-                newPost = {posts: [{status: 'published', title: newTitle, markdown: 'my post', tags: [newTag]}]};
+                newPost = {posts: [{status: 'published', title: newTitle, mobiledoc: markdownToMobiledoc('my post'), tags: [newTag]}]};
 
             request.post(testUtils.API.getApiQuery('posts/?include=tags'))
                 .set('Authorization', 'Bearer ' + accesstoken)
@@ -960,7 +1093,7 @@ describe('Post API', function () {
         it('can delete a new draft', function (done) {
             var newTitle = 'My Post',
                 publishedState = 'draft',
-                newPost = {posts: [{status: publishedState, title: newTitle, markdown: 'my post'}]};
+                newPost = {posts: [{status: publishedState, title: newTitle, mobiledoc: markdownToMobiledoc('my post')}]};
 
             request.post(testUtils.API.getApiQuery('posts/'))
                 .set('Authorization', 'Bearer ' + accesstoken)

@@ -181,8 +181,8 @@ describe('Database Migration (special functions)', function () {
 
                     // Post
                     should.exist(result.posts);
-                    result.posts.length.should.eql(1);
-                    result.posts.at(0).get('title').should.eql('Welcome to Ghost');
+                    result.posts.length.should.eql(7);
+                    result.posts.at(0).get('title').should.eql('Setting up your own Ghost theme');
 
                     // Tag
                     should.exist(result.tags);
@@ -203,7 +203,7 @@ describe('Database Migration (special functions)', function () {
                     // User (Owner)
                     should.exist(result.users);
                     result.users.length.should.eql(1);
-                    result.users.at(0).get('name').should.eql('Ghost Owner');
+                    result.users.at(0).get('name').should.eql('Ghost');
                     result.users.at(0).get('status').should.eql('inactive');
                     result.users.at(0).related('roles').length.should.eql(1);
                     result.users.at(0).related('roles').at(0).get('name').should.eql('Owner');

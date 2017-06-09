@@ -19,13 +19,18 @@ module.exports = function toJSON(name, checkedTheme) {
         themeResult = packages.filterPackages(toFilter, settingsCache.get('active_theme'));
     } else {
         // If we pass in a gscan result, convert this instead
-        toFilter = {};
-        toFilter[name] = themeList.get(name);
+        toFilter = {
+            [name]: themeList.get(name)
+        };
 
         themeResult = packages.filterPackages(toFilter, settingsCache.get('active_theme'));
 
         if (checkedTheme && checkedTheme.results.warning.length > 0) {
             themeResult[0].warnings = _.cloneDeep(checkedTheme.results.warning);
+        }
+
+        if (checkedTheme && checkedTheme.results.error.length > 0) {
+            themeResult[0].errors = _.cloneDeep(checkedTheme.results.error);
         }
     }
 

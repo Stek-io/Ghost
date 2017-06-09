@@ -1,6 +1,6 @@
 {
   "name": "ghost",
-  "version": "1.0.0-alpha.21",
+  "version": "1.0.0-beta.1",
   "description": "Just a blogging platform.",
   "author": "Ghost Foundation",
   "homepage": "http://ghost.org",
@@ -23,7 +23,7 @@
     "init": "yarn global add knex-migrator ember-cli grunt-cli && yarn install && grunt symlink && grunt init || true"
   },
   "engines": {
-    "node": "^4.2.0 || ^6.5.0"
+    "node": "^4.5.0 || ^6.9.0"
   },
   "dependencies": {
     "amperize": "0.3.4",
@@ -52,7 +52,7 @@
     "ghost-ignition": "2.8.11",
     "ghost-storage-base": "0.0.1",
     "glob": "5.0.15",
-    "gscan": "1.0.0",
+    "gscan": "1.1.1",
     "html-to-text": "3.2.0",
     "icojs": "0.7.2",
     "image-size": "0.5.2",
