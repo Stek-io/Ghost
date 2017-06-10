@@ -5,7 +5,7 @@ var should = require('should'), // jshint ignore:line
 
     sandbox = sinon.sandbox.create();
 
-describe('UNIT: url redirects', function () {
+describe('checkSSL', function () {
     var res, req, next, host;
 
     beforeEach(function () {
@@ -139,21 +139,6 @@ describe('UNIT: url redirects', function () {
         });
 
         host = 'default.com:2368';
-        res.isAdmin = true;
-
-        req.originalUrl = '/ghost';
-        urlRedirects(req, res, next);
-        next.called.should.be.true();
-        res.redirect.called.should.be.false();
-        done();
-    });
-
-    it('admin request, no custom admin.url configured', function (done) {
-        configUtils.set({
-            url: 'http://default.com:2368'
-        });
-
-        host = 'localhost:2368';
         res.isAdmin = true;
 
         req.originalUrl = '/ghost';
