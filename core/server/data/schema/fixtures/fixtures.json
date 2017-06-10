@@ -392,8 +392,8 @@
             "entries": [
                 {
                     "id": 1,
-                    "name": "Ghost",
-                    "email": "ghost@example.com",
+                    "name": "Ghost Owner",
+                    "email": "ghost@ghost.org",
                     "status": "inactive",
                     "roles": []
                 }
