@@ -18,13 +18,13 @@
             "defaultValue": "Ghost"
         },
         "description": {
-            "defaultValue": "Just a blogging platform."
+            "defaultValue": "A blogging platform."
         },
         "logo": {
             "defaultValue": "https://casper.ghost.org/v1.0.0/images/ghost-logo.svg"
         },
         "cover_image": {
-            "defaultValue": "https://casper.ghost.org/v1.0.0/images/blog-cover.jpg"
+            "defaultValue": "https://d7o2jc3zzmind.cloudfront.net/ghost/blog-cover.jpg"
         },
         "icon": {
             "defaultValue": ""
